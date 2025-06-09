@@ -12,7 +12,6 @@ if 'agent_a_assets' not in st.session_state:
     st.session_state.agent_b_name = "Agent B"
     st.session_state.delete_index = ""
     st.session_state.delete_account = ""
-    st.session_state.__force_refresh = 0  # dummy trigger for rerender
 
 def parse_amount(text):
     try:
@@ -171,7 +170,6 @@ if st.button("Delete Entry"):
             removed = target_list.pop(index)
             st.success(f"Deleted: {format_entry(index, removed)}")
             st.session_state["delete_index"] = ""  # Clear input after deletion
-            st.session_state["__force_refresh"] += 1  # Force rerender
         else:
             st.error("Index out of range.")
     except ValueError:
