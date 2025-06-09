@@ -47,25 +47,33 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.markdown(f"#### {st.session_state.agent_a_name}")
-    a_asset_amt = st.text_input("Asset Amount (A)", key="a_asset_amt")
-    a_asset_name = st.text_input("Asset Name (A)", key="a_asset_name")
+    st.text_input("Asset Amount (A)", key="a_asset_amt")
+    st.text_input("Asset Name (A)", key="a_asset_name")
     if st.button("Add Asset A"):
-        add_entry(st.session_state.agent_a_assets, a_asset_amt, a_asset_name, "Unnamed Asset")
-    a_liab_amt = st.text_input("Liability Amount (A)", key="a_liab_amt")
-    a_liab_name = st.text_input("Liability Name (A)", key="a_liab_name")
+        amt = st.session_state.get("a_asset_amt", "")
+        name = st.session_state.get("a_asset_name", "")
+        add_entry(st.session_state.agent_a_assets, amt, name, "Unnamed Asset")
+    st.text_input("Liability Amount (A)", key="a_liab_amt")
+    st.text_input("Liability Name (A)", key="a_liab_name")
     if st.button("Add Liability A"):
-        add_entry(st.session_state.agent_a_liabilities, a_liab_amt, a_liab_name, "Unnamed Liability")
+        amt = st.session_state.get("a_liab_amt", "")
+        name = st.session_state.get("a_liab_name", "")
+        add_entry(st.session_state.agent_a_liabilities, amt, name, "Unnamed Liability")
 
 with col2:
     st.markdown(f"#### {st.session_state.agent_b_name}")
-    b_asset_amt = st.text_input("Asset Amount (B)", key="b_asset_amt")
-    b_asset_name = st.text_input("Asset Name (B)", key="b_asset_name")
+    st.text_input("Asset Amount (B)", key="b_asset_amt")
+    st.text_input("Asset Name (B)", key="b_asset_name")
     if st.button("Add Asset B"):
-        add_entry(st.session_state.agent_b_assets, b_asset_amt, b_asset_name, "Unnamed Asset")
-    b_liab_amt = st.text_input("Liability Amount (B)", key="b_liab_amt")
-    b_liab_name = st.text_input("Liability Name (B)", key="b_liab_name")
+        amt = st.session_state.get("b_asset_amt", "")
+        name = st.session_state.get("b_asset_name", "")
+        add_entry(st.session_state.agent_b_assets, amt, name, "Unnamed Asset")
+    st.text_input("Liability Amount (B)", key="b_liab_amt")
+    st.text_input("Liability Name (B)", key="b_liab_name")
     if st.button("Add Liability B"):
-        add_entry(st.session_state.agent_b_liabilities, b_liab_amt, b_liab_name, "Unnamed Liability")
+        amt = st.session_state.get("b_liab_amt", "")
+        name = st.session_state.get("b_liab_name", "")
+        add_entry(st.session_state.agent_b_liabilities, amt, name, "Unnamed Liability")
 
 if st.button("Reset All"):
     reset_all()
