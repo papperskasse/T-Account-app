@@ -11,11 +11,6 @@ if 'agent_a_assets' not in st.session_state:
     st.session_state.agent_a_name = "Agent A"
     st.session_state.agent_b_name = "Agent B"
 
-# Clearable input wrapper
-def clear_input(keys):
-    for key in keys:
-        st.session_state[key] = ""
-
 def parse_amount(text):
     try:
         return float(text.strip())
@@ -58,14 +53,12 @@ with col1:
         amt = st.session_state.get("a_asset_amt", "")
         name = st.session_state.get("a_asset_name", "")
         add_entry(st.session_state.agent_a_assets, amt, name, "Unnamed Asset")
-        clear_input(["a_asset_amt", "a_asset_name"])
     st.text_input("Liability Amount (A)", key="a_liab_amt")
     st.text_input("Liability Name (A)", key="a_liab_name")
     if st.button("Add Liability A"):
         amt = st.session_state.get("a_liab_amt", "")
         name = st.session_state.get("a_liab_name", "")
         add_entry(st.session_state.agent_a_liabilities, amt, name, "Unnamed Liability")
-        clear_input(["a_liab_amt", "a_liab_name"])
 
 with col2:
     st.markdown(f"#### {st.session_state.agent_b_name} Entries")
@@ -75,14 +68,12 @@ with col2:
         amt = st.session_state.get("b_asset_amt", "")
         name = st.session_state.get("b_asset_name", "")
         add_entry(st.session_state.agent_b_assets, amt, name, "Unnamed Asset")
-        clear_input(["b_asset_amt", "b_asset_name"])
     st.text_input("Liability Amount (B)", key="b_liab_amt")
     st.text_input("Liability Name (B)", key="b_liab_name")
     if st.button("Add Liability B"):
         amt = st.session_state.get("b_liab_amt", "")
         name = st.session_state.get("b_liab_name", "")
         add_entry(st.session_state.agent_b_liabilities, amt, name, "Unnamed Liability")
-        clear_input(["b_liab_amt", "b_liab_name"])
 
 if st.button("Reset All"):
     reset_all()
@@ -180,6 +171,3 @@ if st.button("Delete Entry"):
             st.error("Index out of range.")
     except ValueError:
         st.error("Enter a valid integer index.")
-
-if st.button("Update View"):
-    st.info("UI manually refreshed.")
