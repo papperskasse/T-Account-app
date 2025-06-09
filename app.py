@@ -87,8 +87,6 @@ a_liabs = st.session_state.agent_a_liabilities
 b_assets = st.session_state.agent_b_assets
 b_liabs = st.session_state.agent_b_liabilities
 
-max_len = max(len(a_assets), len(a_liabs), len(b_assets), len(b_liabs), 1)
-
 a_col, gap, b_col = st.columns([1.5, 0.2, 1.5])
 
 with a_col:
@@ -96,24 +94,24 @@ with a_col:
     lcol, rcol = st.columns(2)
     with lcol:
         st.markdown("#### Assets")
-        for entry in a_assets:
-            st.text(format_entry(entry))
+        for i, entry in enumerate(a_assets):
+            st.text(f"{i}: {format_entry(entry)}")
     with rcol:
         st.markdown("#### Liabilities")
-        for entry in a_liabs:
-            st.text(format_entry(entry))
+        for i, entry in enumerate(a_liabs):
+            st.text(f"{i}: {format_entry(entry)}")
 
 with b_col:
     st.markdown(f"### {st.session_state.agent_b_name}")
     lcol, rcol = st.columns(2)
     with lcol:
         st.markdown("#### Assets")
-        for entry in b_assets:
-            st.text(format_entry(entry))
+        for i, entry in enumerate(b_assets):
+            st.text(f"{i}: {format_entry(entry)}")
     with rcol:
         st.markdown("#### Liabilities")
-        for entry in b_liabs:
-            st.text(format_entry(entry))
+        for i, entry in enumerate(b_liabs):
+            st.text(f"{i}: {format_entry(entry)}")
 
 # Balance check
 def sum_entries(entries): return sum(x[0] for x in entries)
@@ -146,3 +144,33 @@ with col3:
     st.markdown(f"Total Assets: {total_assets:.2f}")
     st.markdown(f"Total Liabilities: {total_liabs:.2f}")
     st.markdown("✅ System Balanced" if total_assets == total_liabs else "❌ System Not Balanced")
+
+# Delete Entry
+st.markdown("---")
+st.markdown("## Delete Entry")
+
+delete_col1, delete_col2 = st.columns(2)
+
+account_options = {
+    f"{st.session_state.agent_a_name} - Assets": st.session_state.agent_a_assets,
+    f"{st.session_state.agent_a_name} - Liabilities": st.session_state.agent_a_liabilities,
+    f"{st.session_state.agent_b_name} - Assets": st.session_state.agent_b_assets,
+    f"{st.session_state.agent_b_name} - Liabilities": st.session_state.agent_b_liabilities,
+}
+
+with delete_col1:
+    selected_account = st.selectbox("Select Account", list(account_options.keys()))
+with delete_col2:
+    delete_index = st.text_input("Index to delete", value="", key="delete_index")
+
+if st.button("Delete Entry"):
+    try:
+        index = int(delete_index)
+        target_list = account_options[selected_account]
+        if 0 <= index < len(target_list):
+            removed = target_list.pop(index)
+            st.success(f"Deleted entry: {format_entry(removed)}")
+        else:
+            st.error("Index out of range.")
+    except:
+        st.error("Invalid index.")
