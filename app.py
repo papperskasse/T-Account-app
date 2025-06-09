@@ -29,9 +29,9 @@ def add_entry(store, amount_text, name_text, default_label):
     if amount is not None:
         store.append((amount, name))
 
-def format_entry(entry):
+def format_entry(i, entry):
     amount, name = entry
-    return f"{amount:+.2f}  {name}"
+    return f"[{i}] {amount:+.2f}  {name}"
 
 # Agent naming
 st.markdown("### Name the agents")
@@ -95,11 +95,11 @@ with a_col:
     with lcol:
         st.markdown("#### Assets")
         for i, entry in enumerate(a_assets):
-            st.text(f"{i}: {format_entry(entry)}")
+            st.text(format_entry(i, entry))
     with rcol:
         st.markdown("#### Liabilities")
         for i, entry in enumerate(a_liabs):
-            st.text(f"{i}: {format_entry(entry)}")
+            st.text(format_entry(i, entry))
 
 with b_col:
     st.markdown(f"### {st.session_state.agent_b_name}")
@@ -107,11 +107,11 @@ with b_col:
     with lcol:
         st.markdown("#### Assets")
         for i, entry in enumerate(b_assets):
-            st.text(f"{i}: {format_entry(entry)}")
+            st.text(format_entry(i, entry))
     with rcol:
         st.markdown("#### Liabilities")
         for i, entry in enumerate(b_liabs):
-            st.text(f"{i}: {format_entry(entry)}")
+            st.text(format_entry(i, entry))
 
 # Balance check
 def sum_entries(entries): return sum(x[0] for x in entries)
@@ -149,28 +149,28 @@ with col3:
 st.markdown("---")
 st.markdown("## Delete Entry")
 
-delete_col1, delete_col2 = st.columns(2)
-
-account_options = {
+account_map = {
     f"{st.session_state.agent_a_name} - Assets": st.session_state.agent_a_assets,
     f"{st.session_state.agent_a_name} - Liabilities": st.session_state.agent_a_liabilities,
     f"{st.session_state.agent_b_name} - Assets": st.session_state.agent_b_assets,
     f"{st.session_state.agent_b_name} - Liabilities": st.session_state.agent_b_liabilities,
 }
 
-with delete_col1:
-    selected_account = st.selectbox("Select Account", list(account_options.keys()))
-with delete_col2:
-    delete_index = st.text_input("Index to delete", value="", key="delete_index")
+col1, col2 = st.columns(2)
+with col1:
+    selected_account = st.selectbox("Select account list", list(account_map.keys()))
+with col2:
+    delete_index = st.text_input("Index to delete", key="delete_index")
 
 if st.button("Delete Entry"):
     try:
         index = int(delete_index)
-        target_list = account_options[selected_account]
+        target_list = account_map[selected_account]
         if 0 <= index < len(target_list):
             removed = target_list.pop(index)
-            st.success(f"Deleted entry: {format_entry(removed)}")
+            st.success(f"Deleted: {format_entry(index, removed)}")
         else:
             st.error("Index out of range.")
-    except:
-        st.error("Invalid index.")
+    except ValueError:
+        st.error("Enter a valid integer index.")
+
