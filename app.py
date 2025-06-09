@@ -167,9 +167,7 @@ if st.button("Delete Entry"):
         if 0 <= index < len(target_list):
             removed = target_list.pop(index)
             st.success(f"Deleted: {format_entry(index, removed)}")
-            st.experimental_rerun()
         else:
             st.error("Index out of range.")
     except ValueError:
         st.error("Enter a valid integer index.")
-
