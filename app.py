@@ -1,9 +1,8 @@
-
 import streamlit as st
 
 st.set_page_config(page_title="T-Account System", layout="wide")
 
-# Session state init
+# Initialize session state
 if 'agent_a_assets' not in st.session_state:
     st.session_state.agent_a_assets = []
     st.session_state.agent_a_liabilities = []
@@ -32,21 +31,22 @@ def add_entry(store, amount_text, name_text, default_label):
 
 def format_entry(entry):
     amount, name = entry
-    return f"{amount:+.2f} {name}"
+    return f"{amount:+.2f}  {name}"
 
-# Agent name inputs
+# Agent naming
+st.markdown("### Name the agents")
 col1, col2 = st.columns(2)
 with col1:
     st.session_state.agent_a_name = st.text_input("Agent A Name", st.session_state.agent_a_name)
 with col2:
     st.session_state.agent_b_name = st.text_input("Agent B Name", st.session_state.agent_b_name)
 
-st.markdown("## Add Entries")
-
+# Add entries
+st.markdown("### Add Entries")
 col1, col2 = st.columns(2)
 
 with col1:
-    st.markdown(f"#### {st.session_state.agent_a_name}")
+    st.markdown(f"#### {st.session_state.agent_a_name} Entries")
     st.text_input("Asset Amount (A)", key="a_asset_amt")
     st.text_input("Asset Name (A)", key="a_asset_name")
     if st.button("Add Asset A"):
@@ -61,7 +61,7 @@ with col1:
         add_entry(st.session_state.agent_a_liabilities, amt, name, "Unnamed Liability")
 
 with col2:
-    st.markdown(f"#### {st.session_state.agent_b_name}")
+    st.markdown(f"#### {st.session_state.agent_b_name} Entries")
     st.text_input("Asset Amount (B)", key="b_asset_amt")
     st.text_input("Asset Name (B)", key="b_asset_name")
     if st.button("Add Asset B"):
@@ -78,11 +78,9 @@ with col2:
 if st.button("Reset All"):
     reset_all()
 
+# Visual T-Accounts
 st.markdown("---")
-st.markdown("## T-Accounts")
-
-# Display table
-def sum_side(entries): return sum(x[0] for x in entries)
+st.markdown("## T-Account View")
 
 a_assets = st.session_state.agent_a_assets
 a_liabs = st.session_state.agent_a_liabilities
@@ -91,32 +89,60 @@ b_liabs = st.session_state.agent_b_liabilities
 
 max_len = max(len(a_assets), len(a_liabs), len(b_assets), len(b_liabs), 1)
 
-headers = f"| Idx | {st.session_state.agent_a_name} Assets | {st.session_state.agent_a_name} Liabilities | {st.session_state.agent_b_name} Assets | {st.session_state.agent_b_name} Liabilities |"
-st.markdown(headers)
-st.markdown("|-----|---------------------|-------------------------|----------------------|---------------------------|")
+a_col, gap, b_col = st.columns([1.5, 0.2, 1.5])
 
-for i in range(max_len):
-    a_asset = format_entry(a_assets[i]) if i < len(a_assets) else ""
-    a_liab = format_entry(a_liabs[i]) if i < len(a_liabs) else ""
-    b_asset = format_entry(b_assets[i]) if i < len(b_assets) else ""
-    b_liab = format_entry(b_liabs[i]) if i < len(b_liabs) else ""
-    st.markdown(f"| {i} | {a_asset} | {a_liab} | {b_asset} | {b_liab} |")
+with a_col:
+    st.markdown(f"### {st.session_state.agent_a_name}")
+    lcol, rcol = st.columns(2)
+    with lcol:
+        st.markdown("#### Assets")
+        for entry in a_assets:
+            st.text(format_entry(entry))
+    with rcol:
+        st.markdown("#### Liabilities")
+        for entry in a_liabs:
+            st.text(format_entry(entry))
 
-ta_assets = sum_side(a_assets)
-ta_liabs = sum_side(a_liabs)
-tb_assets = sum_side(b_assets)
-tb_liabs = sum_side(b_liabs)
+with b_col:
+    st.markdown(f"### {st.session_state.agent_b_name}")
+    lcol, rcol = st.columns(2)
+    with lcol:
+        st.markdown("#### Assets")
+        for entry in b_assets:
+            st.text(format_entry(entry))
+    with rcol:
+        st.markdown("#### Liabilities")
+        for entry in b_liabs:
+            st.text(format_entry(entry))
+
+# Balance check
+def sum_entries(entries): return sum(x[0] for x in entries)
+
+ta_assets = sum_entries(a_assets)
+ta_liabs = sum_entries(a_liabs)
+tb_assets = sum_entries(b_assets)
+tb_liabs = sum_entries(b_liabs)
+total_assets = ta_assets + tb_assets
+total_liabs = ta_liabs + tb_liabs
 
 st.markdown("---")
+st.markdown("## Balance Check")
+
 col1, col2, col3 = st.columns(3)
 with col1:
-    st.markdown(f"**{st.session_state.agent_a_name}**: Assets = {ta_assets:.2f}, Liabilities = {ta_liabs:.2f}")
+    st.markdown(f"**{st.session_state.agent_a_name}**")
+    st.markdown(f"Assets: {ta_assets:.2f}")
+    st.markdown(f"Liabilities: {ta_liabs:.2f}")
     st.markdown("✅ Balanced" if ta_assets == ta_liabs else "❌ Not Balanced")
+
 with col2:
-    st.markdown(f"**{st.session_state.agent_b_name}**: Assets = {tb_assets:.2f}, Liabilities = {tb_liabs:.2f}")
+    st.markdown(f"**{st.session_state.agent_b_name}**")
+    st.markdown(f"Assets: {tb_assets:.2f}")
+    st.markdown(f"Liabilities: {tb_liabs:.2f}")
     st.markdown("✅ Balanced" if tb_assets == tb_liabs else "❌ Not Balanced")
+
 with col3:
-    total_assets = ta_assets + tb_assets
-    total_liabs = ta_liabs + tb_liabs
-    st.markdown(f"**System**: Assets = {total_assets:.2f}, Liabilities = {total_liabs:.2f}")
+    st.markdown("**System**")
+    st.markdown(f"Total Assets: {total_assets:.2f}")
+    st.markdown(f"Total Liabilities: {total_liabs:.2f}")
     st.markdown("✅ System Balanced" if total_assets == total_liabs else "❌ System Not Balanced")
