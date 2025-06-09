@@ -10,6 +10,8 @@ if 'agent_a_assets' not in st.session_state:
     st.session_state.agent_b_liabilities = []
     st.session_state.agent_a_name = "Agent A"
     st.session_state.agent_b_name = "Agent B"
+    st.session_state.delete_index = ""
+    st.session_state.selected_account = ""
 
 def parse_amount(text):
     try:
@@ -158,19 +160,20 @@ account_map = {
 
 col1, col2 = st.columns(2)
 with col1:
-    selected_account = st.selectbox("Select account list", list(account_map.keys()))
+    st.session_state.selected_account = st.selectbox("Select account list", list(account_map.keys()), key="account_box")
 with col2:
-    delete_index = st.text_input("Index to delete", key="delete_index")
+    st.session_state.delete_index = st.text_input("Index to delete", key="delete_index")
 
 if st.button("Delete Entry"):
     try:
-        index = int(delete_index)
-        target_list = account_map[selected_account]
+        index = int(st.session_state.delete_index)
+        target_list = account_map[st.session_state.selected_account]
         if 0 <= index < len(target_list):
             removed = target_list.pop(index)
+            st.session_state.delete_index = ""  # Clear input
             st.success(f"Deleted: {format_entry(index, removed)}")
+            st.experimental_rerun()  # Immediate UI update
         else:
             st.error("Index out of range.")
     except ValueError:
         st.error("Enter a valid integer index.")
-
