@@ -55,6 +55,7 @@ with col1:
         add_entry(st.session_state.agent_a_assets, amt, name, "Unnamed Asset")
         st.session_state["a_asset_amt"] = ""
         st.session_state["a_asset_name"] = ""
+        st.experimental_rerun()
 
     st.text_input("Liability Amount (A)", key="a_liab_amt")
     st.text_input("Liability Name (A)", key="a_liab_name")
@@ -64,6 +65,7 @@ with col1:
         add_entry(st.session_state.agent_a_liabilities, amt, name, "Unnamed Liability")
         st.session_state["a_liab_amt"] = ""
         st.session_state["a_liab_name"] = ""
+        st.experimental_rerun()
 
 with col2:
     st.markdown(f"#### {st.session_state.agent_b_name} Entries")
@@ -75,6 +77,7 @@ with col2:
         add_entry(st.session_state.agent_b_assets, amt, name, "Unnamed Asset")
         st.session_state["b_asset_amt"] = ""
         st.session_state["b_asset_name"] = ""
+        st.experimental_rerun()
 
     st.text_input("Liability Amount (B)", key="b_liab_amt")
     st.text_input("Liability Name (B)", key="b_liab_name")
@@ -84,6 +87,7 @@ with col2:
         add_entry(st.session_state.agent_b_liabilities, amt, name, "Unnamed Liability")
         st.session_state["b_liab_amt"] = ""
         st.session_state["b_liab_name"] = ""
+        st.experimental_rerun()
 
 if st.button("Reset All"):
     reset_all()
@@ -167,17 +171,4 @@ account_map = {
 }
 
 col1, col2 = st.columns(2)
-selected_account = col1.selectbox("Select account list", list(account_map.keys()))
-delete_index = col2.text_input("Index to delete", value="", key="delete_index")
-
-if st.button("Delete Entry"):
-    try:
-        index = int(delete_index)
-        target_list = account_map[selected_account]
-        if 0 <= index < len(target_list):
-            removed = target_list.pop(index)
-            st.success(f"Deleted: {format_entry(index, removed)}")
-        else:
-            st.error("Index out of range.")
-    except ValueError:
-        st.error("Enter a valid integer index.")
+selected_account = col1.se_
