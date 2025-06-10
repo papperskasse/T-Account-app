@@ -1,5 +1,6 @@
 import streamlit as st
 
+
 st.set_page_config(page_title="T-Account System", layout="wide")
 
 # Initialize session state
@@ -53,19 +54,12 @@ with col1:
         amt = st.session_state.get("a_asset_amt", "")
         name = st.session_state.get("a_asset_name", "")
         add_entry(st.session_state.agent_a_assets, amt, name, "Unnamed Asset")
-        st.session_state["a_asset_amt"] = ""
-        st.session_state["a_asset_name"] = ""
-        st.rerun()
-
     st.text_input("Liability Amount (A)", key="a_liab_amt")
     st.text_input("Liability Name (A)", key="a_liab_name")
     if st.button("Add Liability A"):
         amt = st.session_state.get("a_liab_amt", "")
         name = st.session_state.get("a_liab_name", "")
         add_entry(st.session_state.agent_a_liabilities, amt, name, "Unnamed Liability")
-        st.session_state["a_liab_amt"] = ""
-        st.session_state["a_liab_name"] = ""
-        st.rerun()
 
 with col2:
     st.markdown(f"#### {st.session_state.agent_b_name} Entries")
@@ -75,19 +69,12 @@ with col2:
         amt = st.session_state.get("b_asset_amt", "")
         name = st.session_state.get("b_asset_name", "")
         add_entry(st.session_state.agent_b_assets, amt, name, "Unnamed Asset")
-        st.session_state["b_asset_amt"] = ""
-        st.session_state["b_asset_name"] = ""
-        st.rerun()
-
     st.text_input("Liability Amount (B)", key="b_liab_amt")
     st.text_input("Liability Name (B)", key="b_liab_name")
     if st.button("Add Liability B"):
         amt = st.session_state.get("b_liab_amt", "")
         name = st.session_state.get("b_liab_name", "")
         add_entry(st.session_state.agent_b_liabilities, amt, name, "Unnamed Liability")
-        st.session_state["b_liab_amt"] = ""
-        st.session_state["b_liab_name"] = ""
-        st.rerun()
 
 if st.button("Reset All"):
     reset_all()
